@@ -1,0 +1,36 @@
+{
+  "name": "@sorosave/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for SoroSave — Decentralized Group Savings Protocol on Soroban",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^13.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/big14way/sorosave.git",
+    "directory": "sdk"
+  },
+  "keywords": [
+    "soroban",
+    "stellar",
+    "defi",
+    "savings",
+    "ajo",
+    "susu",
+    "chit-fund"
+  ]
+}
