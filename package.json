@@ -11,12 +11,14 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "^13.0.0"
+    "@stellar/stellar-sdk": "^13.0.0",
+    "dotenv": "^17.3.1",
+    "grammy": "^1.40.0"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "typescript": "^5.5.0",
-    "vitest": "^2.0.0",
-    "@types/node": "^20.0.0"
+    "vitest": "^2.0.0"
   },
   "license": "MIT",
   "repository": {
