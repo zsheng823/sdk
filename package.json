@@ -1,38 +1,38 @@
 {
   "name": "@sorosave/sdk",
-  "version": "0.1.0",
-  "description": "TypeScript SDK for SoroSave — Decentralized Group Savings Protocol on Soroban",
+  "version": "1.0.0",
+  "description": "SoroSave TypeScript SDK - Integration Tests",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src/"
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/ tests/",
+    "dev": "tsc --watch"
   },
+  "keywords": [
+    "sorosave",
+    "savings",
+    "blockchain",
+    "solana",
+    "sdk",
+    "typescript"
+  ],
+  "author": "zsheng823",
+  "license": "MIT",
   "dependencies": {
-    "@stellar/stellar-sdk": "^13.0.0",
-    "dotenv": "^17.3.1",
-    "grammy": "^1.40.0"
+    "@solana/web3.js": "^1.95.0",
+    "bs58": "^0.8.4",
+    "buffer-layout": "^6.0.11",
+    "tweetnacl": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.5.0",
-    "vitest": "^2.0.0"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/big14way/sorosave.git",
-    "directory": "sdk"
-  },
-  "keywords": [
-    "soroban",
-    "stellar",
-    "defi",
-    "savings",
-    "ajo",
-    "susu",
-    "chit-fund"
-  ]
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "jest": "^29.0.0",
+    "@vitest/ui": "^1.0.0"
+  }
 }
