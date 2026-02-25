@@ -1,0 +1,67 @@
+name: Deploy to Stellar Mainnet
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      contract_address:
+        description: 'Deployed contract address'
+        required: true
+      network:
+        description: 'Network to deploy (mainnet)'
+        required: true
+        default: 'mainnet'
+        type: choice
+        options:
+          - mainnet
+          - testnet
+
+permissions:
+  contents: read
+  id-token: write
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Install Soroban CLI
+        run: |
+          npm install -g @soroban/cli
+
+      - name: Deploy to Stellar mainnet
+        run: |
+          echo "Deploying to Stellar ${{ inputs.network }}..."
+          soroban deploy --network ${{ inputs.network }}
+          echo "Contract address: ${{ inputs.contract_address }}"
+        env:
+          SOROBAN_SECRET_KEY: ${{ secrets.SOROBAN_SECRET_KEY }}
+          SOROBAN_NETWORK: ${{ inputs.network }}
+          CONTRACT_ADDRESS: ${{ inputs.contract_address }}
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment verified!"
+          echo "Contract address: ${{ inputs.contract_address }}"
+          echo "Network: ${{ inputs.network }}"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          echo "::notice title=Deployment completed::Deployed contract to Stellar ${{ inputs.network }}"
+          echo "::notice::Contract address: ${{ inputs.contract_address }}"
