@@ -1,8 +1,6 @@
 name: Deploy to Stellar Mainnet
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       contract_address:
@@ -11,11 +9,15 @@ on:
       network:
         description: 'Network to deploy (mainnet)'
         required: true
-        default: 'mainnet'
         type: choice
         options:
           - mainnet
           - testnet
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -25,6 +27,8 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,34 +38,47 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-
       - name: Install Soroban CLI
         run: |
           npm install -g @soroban/cli
 
+      - name: Check Soroban CLI
+        run: |
+          soroban --version
+          soroban config list
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Run tests
+        run: |
+          npm test
+        continue-on-error: false
+
+      - name: Build project
+        run: |
+          npm run build
+
       - name: Deploy to Stellar mainnet
         run: |
           echo "Deploying to Stellar ${{ inputs.network }}..."
-          soroban deploy --network ${{ inputs.network }}
+          soroban deploy --network ${{ inputs.network }} --contract ${{ inputs.contract_address }}
           echo "Contract address: ${{ inputs.contract_address }}"
-        env:
-          SOROBAN_SECRET_KEY: ${{ secrets.SOROBAN_SECRET_KEY }}
-          SOROBAN_NETWORK: ${{ inputs.network }}
-          CONTRACT_ADDRESS: ${{ inputs.contract_address }}
+          echo "Network: ${{ inputs.network }}"
 
       - name: Verify deployment
         run: |
-          echo "Deployment verified!"
+          echo "Deployment verification in progress..."
           echo "Contract address: ${{ inputs.contract_address }}"
-          echo "Network: ${{ inputs.network }}"
+          echo "Network: Stellar ${{ inputs.network }}"
+          echo "Deployment completed!"
 
       - name: Notify deployment status
         if: always()
         run: |
-          echo "::notice title=Deployment completed::Deployed contract to Stellar ${{ inputs.network }}"
-          echo "::notice::Contract address: ${{ inputs.contract_address }}"
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "::notice title=Deployment completed::Deployed to Stellar ${{ inputs.network }}"
+            echo "::notice::Contract address: ${{ inputs.contract_address }}"
+          else
+            echo "::notice title=Deployment failed::Failed to deploy to Stellar ${{ inputs.network }}"
